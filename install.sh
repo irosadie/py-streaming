@@ -53,11 +53,15 @@ fi
 echo "Installing dependencies..."
 execute_with_error_check sudo apt install -y software-properties-common || exit 1
 
-# Add FFmpeg PPA
-echo "Adding FFmpeg PPA..."
-execute_with_error_check sudo add-apt-repository -y ppa:savoury1/ffmpeg4 || exit 1
+# Remove old FFmpeg PPA if it exists
+echo "Removing old FFmpeg PPA if it exists..."
+sudo add-apt-repository --remove ppa:savoury1/ffmpeg4 || true
 
-# Update package list after adding the PPA
+# Add a new FFmpeg PPA
+echo "Adding FFmpeg PPA..."
+execute_with_error_check sudo add-apt-repository -y ppa:jonathonf/ffmpeg-4 || exit 1
+
+# Update package list after adding the new PPA
 echo "Updating package list..."
 execute_with_error_check sudo apt update || exit 1
 
@@ -65,7 +69,7 @@ execute_with_error_check sudo apt update || exit 1
 echo "Installing FFmpeg..."
 execute_with_error_check sudo apt install -y ffmpeg || exit 1
 
-# Verify installation
+# Verify FFmpeg installation
 echo "Verifying FFmpeg installation..."
 ffmpeg -version || exit 1
 
