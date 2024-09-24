@@ -57,9 +57,9 @@ execute_with_error_check sudo apt install -y software-properties-common || exit 
 echo "Removing old FFmpeg PPA if it exists..."
 sudo add-apt-repository --remove ppa:savoury1/ffmpeg4 || true
 
-# Add a new FFmpeg PPA
-echo "Adding FFmpeg PPA..."
-execute_with_error_check sudo add-apt-repository -y ppa:jonathonf/ffmpeg-4 || exit 1
+# # Add a new FFmpeg PPA
+# echo "Adding FFmpeg PPA..."
+# execute_with_error_check sudo add-apt-repository -y ppa:jonathonf/ffmpeg-4 || exit 1
 
 # Update package list after adding the new PPA
 echo "Updating package list..."
