@@ -54,8 +54,8 @@ echo "Installing dependencies..."
 execute_with_error_check sudo apt install -y software-properties-common || exit 1
 
 # Remove old FFmpeg PPA if it exists
-echo "Removing old FFmpeg PPA if it exists..."
-sudo add-apt-repository --remove ppa:savoury1/ffmpeg4 || true
+# echo "Removing old FFmpeg PPA if it exists..."
+# sudo add-apt-repository --remove ppa:savoury1/ffmpeg4 || true
 
 # # Add a new FFmpeg PPA
 # echo "Adding FFmpeg PPA..."
