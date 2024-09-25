@@ -30,9 +30,28 @@ def start_streaming(stream_key, video_path):
     rtmp_url = f'rtmp://a.rtmp.youtube.com/live2/{stream_key}'
 
     # Start the FFmpeg process asynchronously
+    # ffmpeg_process = (
+    #     ffmpeg.input(video_path, stream_loop=-1)
+    #     .output(rtmp_url, format='flv', vcodec='libx264', acodec='aac', preset='veryfast', b='6800k', g='120')
+    #     .run_async()
+    # )
+    
     ffmpeg_process = (
         ffmpeg.input(video_path, stream_loop=-1)
-        .output(rtmp_url, format='flv', vcodec='libx264', acodec='aac', preset='veryfast', b='6800k', g='120')
+        .output(
+            rtmp_url, 
+            format='flv', 
+            vcodec='libx264', 
+            acodec='aac', 
+            preset='veryfast', 
+            b='6000k',                # Bitrate video sekitar 6 Mbps (sesuaikan dengan target)
+            bufsize='12000k',          # Buffer size dua kali bitrate untuk kestabilan
+            maxrate='6500k',           # Batasi bitrate agar tidak melebihi kapasitas jaringan
+            g='120',                   # Keyframe setiap 2 detik (120 frame di 60 fps)
+            ac='2',                    # Stereo audio (2 channels)
+            ar='44100',                # Sample rate audio 44.1 kHz
+            threads='4'                # Gunakan lebih banyak thread untuk encoding
+        )
         .run_async()
     )
 
