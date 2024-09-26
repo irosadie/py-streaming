@@ -43,7 +43,6 @@ def start_streaming(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar
             g=g,                      # Keyframe every 2 seconds (120 frames at 60 fps)
             ac=ac,                    # Stereo audio (2 channels)
             ar=ar,                    # Audio sample rate 44.1 kHz
-            threads=2,                 # Use more threads for encoding
             crf=23,
             r=30
         )
