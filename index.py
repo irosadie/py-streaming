@@ -34,7 +34,7 @@ def start_streaming(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar
         .output(
             rtmp_url, 
             format='flv', 
-            vcodec='libx264', 
+            vcodec='libx265', 
             acodec='aac', 
             preset='superfast', 
             b=bitrate,                # Video bitrate around 6 Mbps (adjust as needed)
@@ -43,7 +43,9 @@ def start_streaming(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar
             g=g,                      # Keyframe every 2 seconds (120 frames at 60 fps)
             ac=ac,                    # Stereo audio (2 channels)
             ar=ar,                    # Audio sample rate 44.1 kHz
-            threads=4                 # Use more threads for encoding
+            threads=4,                 # Use more threads for encoding
+            crf=23,
+            r=30
         )
         .run_async()
     )
@@ -82,10 +84,10 @@ def start_stream():
     video_path = data.get('video_path')
     
     # Extract parameters from the request body or use default values
-    bitrate = request.json.get('bitrate', '4500k')
-    bufsize = request.json.get('bufsize', '9000k')
-    maxrate = request.json.get('maxrate', '4500k')
-    g = request.json.get('g', '120')
+    bitrate = request.json.get('bitrate', '6800k')
+    bufsize = request.json.get('bufsize', '13600k')
+    maxrate = request.json.get('maxrate', '7200k')
+    g = request.json.get('g', '48')
     ac = request.json.get('ac', '2')
     ar = request.json.get('ar', '44100')
 
