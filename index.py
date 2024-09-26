@@ -34,7 +34,7 @@ def start_streaming(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar
         .output(
             rtmp_url, 
             format='flv', 
-            vcodec='libx265', 
+            vcodec='libx264', 
             acodec='aac', 
             preset='superfast', 
             b=bitrate,                # Video bitrate around 6 Mbps (adjust as needed)
