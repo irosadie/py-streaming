@@ -26,16 +26,8 @@ def check_authentication_header():
 # Dictionary to store streaming threads and processes
 streams = {}
 
-def start_streaming(stream_key, video_path):
+def start_streaming(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar):
     rtmp_url = f'rtmp://a.rtmp.youtube.com/live2/{stream_key}'
-    
-    # Extract parameters from the request body or use default values
-    bitrate = request.json.get('bitrate', '4500k')
-    bufsize = request.json.get('bufsize', '9000k')
-    maxrate = request.json.get('maxrate', '4500k')
-    g = request.json.get('g', '120')
-    ac = request.json.get('ac', '2')
-    ar = request.json.get('ar', '44100')
 
     ffmpeg_process = (
         ffmpeg.input(video_path, stream_loop=-1)
@@ -67,13 +59,13 @@ def start_streaming(stream_key, video_path):
     ffmpeg_process.terminate()
     ffmpeg_process.wait()
 
-def start_stream_thread(stream_key, video_path):
+def start_stream_thread(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar):
     """Starts the streaming function in a separate thread."""
     # Initialize the stream dictionary entry
     streams[stream_key] = {'thread': None, 'process': None, 'active': True}
 
     # Start the streaming in a new thread
-    stream_thread = threading.Thread(target=start_streaming, args=(stream_key, video_path))
+    stream_thread = threading.Thread(target=start_streaming, args=(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar))
     streams[stream_key]['thread'] = stream_thread
     stream_thread.start()
 
@@ -88,6 +80,14 @@ def start_stream():
     data = request.json
     stream_key = data.get('stream_key')
     video_path = data.get('video_path')
+    
+    # Extract parameters from the request body or use default values
+    bitrate = request.json.get('bitrate', '4500k')
+    bufsize = request.json.get('bufsize', '9000k')
+    maxrate = request.json.get('maxrate', '4500k')
+    g = request.json.get('g', '120')
+    ac = request.json.get('ac', '2')
+    ar = request.json.get('ar', '44100')
 
     # Validate input
     if not stream_key or not video_path:
@@ -99,7 +99,7 @@ def start_stream():
 
     # Start streaming if the stream_key is not already active
     if stream_key not in streams or not streams[stream_key]['active']:
-      start_stream_thread(stream_key, video_path)
+      start_stream_thread(stream_key, video_path, bitrate, bufsize, maxrate, g, ac, ar)
       return jsonify({"message": f"Streaming for {stream_key} started successfully!"})
     else:
       return jsonify({"error": f"Stream {stream_key} is already running."}), 400
