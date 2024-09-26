@@ -28,11 +28,31 @@ streams = {}
 
 def start_streaming(stream_key, video_path):
     rtmp_url = f'rtmp://a.rtmp.youtube.com/live2/{stream_key}'
+    
+    # Extract parameters from the request body or use default values
+    bitrate = request.json.get('bitrate', '4500k')
+    bufsize = request.json.get('bufsize', '9000k')
+    maxrate = request.json.get('maxrate', '4500k')
+    g = request.json.get('g', '120')
+    ac = request.json.get('ac', '2')
+    ar = request.json.get('ar', '44100')
 
-    # Start the FFmpeg process asynchronously
     ffmpeg_process = (
         ffmpeg.input(video_path, stream_loop=-1)
-        .output(rtmp_url, format='flv', vcodec='libx264', acodec='aac', preset='veryfast', b='6800k', g='120')
+        .output(
+            rtmp_url, 
+            format='flv', 
+            vcodec='libx264', 
+            acodec='aac', 
+            preset='superfast', 
+            b=bitrate,                # Video bitrate around 6 Mbps (adjust as needed)
+            bufsize=bufsize,          # Buffer size twice the bitrate for stability
+            maxrate=maxrate,          # Limit bitrate to not exceed network capacity
+            g=g,                      # Keyframe every 2 seconds (120 frames at 60 fps)
+            ac=ac,                    # Stereo audio (2 channels)
+            ar=ar,                    # Audio sample rate 44.1 kHz
+            threads=4                 # Use more threads for encoding
+        )
         .run_async()
     )
 
